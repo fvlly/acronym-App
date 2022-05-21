@@ -79,7 +79,7 @@ export default function Search() {
                   tabindex="0"
                   class="hidden"
                 />
-                <label>Alphabetially</label>
+                <label>Alphabetically</label>
               </div>
             </div>
             <div class="field">
