@@ -51,6 +51,14 @@ figure {
   margin: 0;
 }
 
+/* making lists easier to work with */
+ul {
+  margin: 0;
+}
+ul li {
+  list-style-type: none;
+}
+
 /* make picture easier to work with */
 picture,
 img {

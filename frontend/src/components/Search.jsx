@@ -1,27 +1,25 @@
-import { useEffect, useState, } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Loader from "./Loader";
 
-
-
-
 export default function Search() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedTerm,setDebouncedTerm]=useState(searchTerm)
+  const [debouncedTerm, setDebouncedTerm] = useState(searchTerm);
+  const [fetchedData, setFetchedData] = useState([]);
 
-  useEffect(()=>{
-    const timerId = setTimeout(()=>{
-      setDebouncedTerm(searchTerm)
-    },600)
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setDebouncedTerm(searchTerm);
+    }, 600);
 
-    return ()=>{
-      clearTimeout(timerId)
-    }
-  },[searchTerm])
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [searchTerm]);
 
-  useEffect(()=>{
-    const search = async() =>{
-      const baseURL ='https://www.stands4.com/services/v2/abbr.php'
+  useEffect(() => {
+    const search = async () => {
+      const baseURL = "https://www.stands4.com/services/v2/abbr.php";
       // const result = await axios.get(baseURL,{
       //   headers:{
       //     'Content-Type': 'application/json',
@@ -33,31 +31,31 @@ export default function Search() {
       //     term:debouncedTerm,
       //     format: 'json',
       //   },
-  
+
       // })
-      const result = await axios({
-        method: 'get',
-        url: baseURL,
-        headers:{
-              'Content-Type': 'application/json',
+      const {
+        data: { result },
+      } = await axios({
+        method: "get",
+        url: `https://cors-anywhere.herokuapp.com/${baseURL}`,
+
+        params: {
+          uid: "10423",
+          tokenid: "SQi5YYHnp7iOrycg",
+          term: debouncedTerm,
+          format: "json",
         },
-        params:{
-              uid: '10423',
-              tokenid:'SQi5YYHnp7iOrycg',
-              term:debouncedTerm,
-              format: 'json',
-            },
-
-
-      })
+      });
 
       console.log(result);
-    }
+      setFetchedData(result.splice(10));
+      console.log(fetchedData);
+    };
 
-    if(debouncedTerm) {
-      search()
+    if (debouncedTerm) {
+      search();
     }
-  },[debouncedTerm])
+  }, [debouncedTerm]);
 
   return (
     <>
@@ -161,6 +159,15 @@ export default function Search() {
             </div>
           </div>
         </div>
+        {/* results of search */}
+        {fetchedData.map((term) => {
+          const { id, definition } = term;
+          return (
+            <ul key={id} className="definitions-container flow">
+              <li>{definition}</li>
+            </ul>
+          );
+        })}
       </div>
     </>
   );
